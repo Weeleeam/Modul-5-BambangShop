@@ -96,3 +96,8 @@ This is the place for you to write reflections:
 - Export/import collection agar mudah kolaborasi antar anggota tim.
 
 #### Reflection Publisher-3
+1. Observer Pattern yang dipakai di tutorial ini adalah Push model. Publisher langsung mengirim data notifikasi ke subscriber melalui HTTP POST (product title, product type, status, dan URL produk sudah dikirim dari publisher). Jadi subscriber tidak perlu mengambil data dulu ke publisher untuk mengetahui event yang terjadi.
+
+2. Jika dibayangkan memakai Pull model pada kasus ini, keuntungannya adalah payload dari publisher bisa lebih ringan, lalu subscriber bebas menentukan kapan dan data apa yang ingin diambil. Ini bisa mengurangi data berlebih pada notifikasi. Namun kekurangannya, jumlah request jaringan menjadi lebih banyak karena setelah menerima event subscriber masih harus memanggil API publisher lagi. Kompleksitas juga naik, jadi perlu endpoint tambahan untuk query detail, mekanisme retry/caching yang lebih baik, dan konsistensi data saat banyak subscriber melakukan pull bersamaan.
+
+3. Jika proses notifikasi tidak memakai multi-threading, pengiriman akan berjalan sinkron satu per satu. Dampaknya, response endpoint publish/create/delete bisa menjadi lebih lambat karena harus menunggu semua request notifikasi selesai. Jika ada satu subscriber lambat atau timeout, seluruh alur bisa ikut tertahan.
