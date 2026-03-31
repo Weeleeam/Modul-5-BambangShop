@@ -84,5 +84,15 @@ This is the place for you to write reflections:
 3. Singleton pattern dan DashMap bukan pengganti langsung karena masalahnya berbeda. Singleton hanya mengatur jumlah instance global (satu instance), tetapi tidak otomatis thread-safe untuk operasi baca/tulis bersamaan. Pada Rust server yang menangani banyak request paralel, kita tetap butuh struktur data concurrent (seperti DashMap) agar aman dari race condition. Jadi saya tetap perlu DashMap walaupun repository-nya secara konsep sudah singleton lewat lazy_static.
 
 #### Reflection Publisher-2
+1. Menurut saya, pemisahan Service dan Repository dari Model diperlukan untuk menjaga separation of concerns. Model sebaiknya fokus pada representasi data dan aturan domain yang paling inti, Repository fokus pada akses data, sedangkan Service fokus pada alur business logic atau use case. Dengan pemisahan ini, kode jadi lebih mudah dirawat, dites, dan diubah.
+
+2. Jika hanya menggunakan Model, interaksi antar model (Program, Subscriber, Notification) cenderung saling menarik tanggung jawab satu sama lain dan menghasilkan coupling tinggi. Program bisa jadi harus tahu detail penyimpanan subscriber, Subscriber bisa ikut mengatur alur publish, dan Notification bisa ikut memegang keputusan bisnis. Akibatnya kompleksitas meningkat dan perubahan kecil berpotensi memicu perubahan berantai di banyak tempat. Selain itu, testing menjadi lebih sulit karena setiap model membawa terlalu banyak dependensi.
+
+3. Saya sudah mengeksplor Postman dan tool ini sangat membantu untuk menguji endpoint secara cepat tanpa membuat client manual. Dalam tugas ini, Postman membantu saya memverifikasi alur subscribe, unsubscribe, publish, dan memastikan response status/body sudah sesuai. Fitur Postman yang paling berguna untuk group project ke depan:
+- Collection dan folder untuk mengelompokkan skenario API per fitur.
+- Environment variables untuk ganti base URL/dev-produk tanpa ubah request satu per satu.
+- Tests tab untuk assertion otomatis pada status code dan response body.
+- Runner untuk menjalankan satu collection sebagai regression test sederhana.
+- Export/import collection agar mudah kolaborasi antar anggota tim.
 
 #### Reflection Publisher-3
