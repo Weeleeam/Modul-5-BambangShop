@@ -77,6 +77,11 @@ This is the place for you to write reflections:
 ### Mandatory (Publisher) Reflections
 
 #### Reflection Publisher-1
+1. Pada kasus BambangShop ini, saya merasa sebuah trait Subscriber belum wajib. Di Observer pattern, interface dibutuhkan jika ada banyak tipe observer berbeda dengan perilaku update yang berbeda-beda. Sementara di kode ini, observer kita hanya satu bentuk data (name, url) dan satu cara update (HTTP POST ke endpoint subscriber). Jadi satu model struct Subscriber sudah cukup untuk kebutuhan saat ini.
+
+2. Untuk id atau url yang harus unik, Vec saja kurang ideal karena uniquenya harus dicek manual dengan linear scan (O(n)) sebelum insert. Ini rawan duplikasi jika pengecekan terlewat dan makin tidak efisien saat data membesar. Struktur map seperti DashMap lebih cocok karena key memang merepresentasikan keunikan itu sendiri (url), sehingga operasi insert/get/delete rata-rata O(1). Jadi pendekatan map lebih tepat daripada list biasa.
+
+3. Singleton pattern dan DashMap bukan pengganti langsung karena masalahnya berbeda. Singleton hanya mengatur jumlah instance global (satu instance), tetapi tidak otomatis thread-safe untuk operasi baca/tulis bersamaan. Pada Rust server yang menangani banyak request paralel, kita tetap butuh struktur data concurrent (seperti DashMap) agar aman dari race condition. Jadi saya tetap perlu DashMap walaupun repository-nya secara konsep sudah singleton lewat lazy_static.
 
 #### Reflection Publisher-2
 
